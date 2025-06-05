@@ -100,11 +100,13 @@ O display exibe:
 
 Se o **TimeTick** estiver "aceso", isso indica que o TimeTick foi repetido. Esse comportamento se aplica tanto ao modo **publisher** quanto ao **subscriber**.
 
+![Imagem do display](assets/display.png)
+
 ### Erros no modo subscriber:
 
 Se o subscriber estiver aguardando mensagens com TimeTick e uma mensagem incompatível for recebida, ela será reportada como **ERRO**, com o indicador aceso.
 
-![Imagem do display](assets/display.png)
+
 
 ---
 
