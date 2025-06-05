@@ -151,11 +151,11 @@ Isso demonstra como é simples interceptar os dados transmitidos em um ambiente 
 Foi configurado o uso de autenticação básica no broker **Mosquitto**, aumentando a segurança das conexões MQTT.
 
 Mosquito rejeitando a conexão (usuário inválido)
-![Imagem Mosquitto rejeitando](assets/mosquitto_rejeitando.png)
+![Imagem Mosquitto rejeitando](assets/usuario_valido.jpeg)
 
 
 Mosquito aceitando a conexão (usuário inválido)
-![Imagem Mosquitto rejeitando](assets/mosquitto_aceitando.png)
+![Imagem Mosquitto rejeitando](assets/usuario_invalido.jpeg)
 
 
 
