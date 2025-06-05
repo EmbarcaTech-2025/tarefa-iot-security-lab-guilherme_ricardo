@@ -1,0 +1,9 @@
+PROJECT_NAME           = "IoT Security Lab MQTT"
+OUTPUT_DIRECTORY       = docs
+INPUT                  = ./src ./include ./libs_ext README.md
+USE_MDFILE_AS_MAINPAGE = README.md
+RECURSIVE              = YES
+GENERATE_LATEX         = NO
+QUIET                  = YES
+WARN_IF_UNDOCUMENTED   = YES
+FILE_PATTERNS          = *.h *.c

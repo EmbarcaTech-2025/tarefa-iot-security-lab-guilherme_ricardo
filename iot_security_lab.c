@@ -1,40 +1,69 @@
-// Bibliotecas necessárias
 #include <string.h>                 // Para funções de string como strlen()
 #include "pico/stdlib.h"            // Biblioteca padrão do Pico (GPIO, tempo, etc.)
-#include "pico/cyw43_arch.h"        // Driver WiFi para Pico W
-#include "include/wifi_conn.h"      // Funções personalizadas de conexão WiFi
-#include "include/mqtt_comm.h"      // Funções personalizadas para MQTT
-#include "include/xor_cipher.h"     // Funções de cifra XOR
+#include "include/config.h"
+#include "include/ui.h"
+#include "include/wifi.h"
+#include "include/mqtt_base.h" 
+
 
 int main() {
     // Inicializa todas as interfaces de I/O padrão (USB serial, etc.)
     stdio_init_all();
-    
-    // Conecta à rede WiFi
-    // Parâmetros: Nome da rede (SSID) e senha
-    connect_to_wifi("SSID da rede", "Senha da rede");
 
-    // Configura o cliente MQTT
-    // Parâmetros: ID do cliente, IP do broker, usuário, senha
-    mqtt_setup("bitdog1", "IP do broker", "aluno", "senha123");
+#ifdef BITDOGLAB_WITH_DEBUG_PROBE
+    gpio_set_function(0, GPIO_FUNC_SIO);
+    gpio_set_function(1, GPIO_FUNC_SIO);
+    gpio_set_function(17, GPIO_FUNC_UART);
+    gpio_set_function(16, GPIO_FUNC_UART);
+#else    
+    sleep_ms(7000);
+#endif
 
-    // Mensagem original a ser enviada
-    const char *mensagem = "26.5";
-    // Buffer para mensagem criptografada (16 bytes)
-    uint8_t criptografada[16];
-    // Criptografa a mensagem usando XOR com chave 42
-    xor_encrypt((uint8_t *)mensagem, criptografada, strlen(mensagem), 42);
+    printf("Init program\n");
+    ui_init();
 
-    // Loop principal do programa
-    while (true) {
-        // Publica a mensagem original (não criptografada)
-        mqtt_comm_publish("escola/sala1/temperatura", mensagem, strlen(mensagem));
-        
-        // Alternativa: Publica a mensagem criptografada (atualmente comentada)
-        // mqtt_comm_publish("escola/sala1/temperatura", criptografada, strlen(mensagem));
-        
-        // Aguarda 5 segundos antes da próxima publicação
-        sleep_ms(5000);
+    // Main loop1, mantem o config disponivel durante a execucao do programa
+    while(1){
+        config_set();
+        printf("Config done, starting program, PRESS Any key to return to config\n");
+        bool executing = true;
+
+        // Main loop2 mantem o programa executando
+        bool wifi_connected   = false;
+        bool broker_connected = false;
+        while (executing){
+            
+            if(wifi_connected){
+                //cyw43_arch_poll();
+                if(cyw43_tcpip_link_status(&cyw43_state, CYW43_ITF_STA) == CYW43_LINK_UP){
+                    // minhas rotinas com wifi conectado
+                    //broker_connected = mqtt_base_update();
+                }else{
+                    wifi_connected = false;
+                    broker_connected = false;
+                    mqtt_base_disconnect();
+                    sleep_ms(WIFI_AFTER_CONNECT_FAIL_DELAY_MS);
+                }
+            }else{
+                printf("WiFi desconnected\n");
+                wifi_connected = wifi_connect_or_reconnected();
+                if (!wifi_connected) {
+                    sleep_ms(WIFI_AFTER_CONNECT_FAIL_DELAY_MS);  // Pequena espera antes de tentar de novo
+                }
+            }
+            broker_connected = mqtt_base_update(wifi_connected);
+
+            // se precionar alguma tecla no terminal volta para o menu de configuração
+            if(getchar_timeout_us(0) != PICO_ERROR_TIMEOUT){
+                executing = false;
+                mqtt_base_disconnect();
+                broker_connected = false;
+                wifi_disconnect();
+                wifi_connected   = false;
+            }
+
+            ui_update(wifi_connected, broker_connected);
+        }
     }
     return 0;
 }
@@ -51,3 +80,7 @@ int main() {
  * Publica mensagem de teste no tópico de temperatura:
  * mosquitto_pub -h localhost -p 1883 -t "escola/sala1/temperatura" -u "aluno" -P "senha123" -m "26.6"
  */
+ 
+ 
+ 
+ 
