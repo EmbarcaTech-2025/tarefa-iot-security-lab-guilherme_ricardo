@@ -1,5 +1,5 @@
 /**
- * @file    mqtt_subscriber.h
+ * @file    mqtt_subscriber.c
  * @author  Guilherme Alves dos Santos e Ricardo Jorge Furlan
  * @brief 
  * @version 0.1

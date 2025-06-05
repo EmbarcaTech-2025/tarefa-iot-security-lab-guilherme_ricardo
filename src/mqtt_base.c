@@ -1,5 +1,5 @@
 /**
- * @file    mqtt_base.h
+ * @file    mqtt_base.c
  * @author  Guilherme Alves dos Santos e Ricardo Jorge Furlan
  * @brief   Conecta ou Disconecta com o Broker MQTT
  * @version 0.1

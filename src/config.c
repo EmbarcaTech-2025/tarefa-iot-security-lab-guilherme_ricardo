@@ -1,5 +1,5 @@
 /**
- * @file    config.h
+ * @file    config.c
  * @author  Guilherme Alves dos Santos e Ricardo Jorge Furlan
  * @brief   Define os principais parâmetros que serão utilizados pelo software
  * @version 0.1

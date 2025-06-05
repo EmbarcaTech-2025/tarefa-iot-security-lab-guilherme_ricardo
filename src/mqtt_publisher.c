@@ -1,5 +1,5 @@
 /**
- * @file    mqtt_publisher.h
+ * @file    mqtt_publisher.c
  * @author  Guilherme Alves dos Santos e Ricardo Jorge Furlan
  * @brief   Gerencia o envio de mensagens pelo publisher
  * 
